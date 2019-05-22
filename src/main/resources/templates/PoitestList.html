@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+</head>
+<body>
+<div th:include="/index.html"></div>
+<button type="button" onclick="tiaojianchaxun()">条件查询</button>
+<input type="text" id="wannengname" name="wannengname">
+<table id="userTable"></table>
+</body>
+<script type="text/javascript">
+
+    $(function(){
+        initUserTable();
+    })
+
+    function  tiaojianchaxun() {
+        $('#userTable').bootstrapTable('refresh');
+    }
+
+    function initUserTable(){
+        $('#userTable').bootstrapTable({
+            toolbar:'#toolbar',
+            url:'/PoitesList',//获取数据地址
+            pagination:true, //是否展示分页
+            pageList:[1,5,10,20,50],//分页组件
+            pageNumber:1,
+            pageSize:2,//默认每页条数
+            clickToSelect: true, //是否启用点击选中行
+            sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
+            queryParams:function(){
+                var wannengname = $("#wannengname").val();
+                return {
+                    page:this.pageNumber,
+                    rows:this.pageSize,
+                    wannengname:wannengname,
+                }
+            },
+            columns:[
+                {field:"id",title:"id"},
+                {field:"name",title:"姓名"},
+                {field:"password",title:"密码"},
+                {field:"sex",title:"性别",formatter:function(value,row,index){
+                        return value==1?"男":value==2?"女":"";
+                    }},
+                {field:"age",title:"年龄"},
+            ]
+        });
+    }
+</script>
+</html>

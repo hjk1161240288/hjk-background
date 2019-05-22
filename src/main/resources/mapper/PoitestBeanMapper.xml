@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.PoitestBeanMapper">
+  
+<!-- 查询用户总条数 -->
+    <select id="bookcount" parameterType="hashMap" resultType="int" >
+        SELECT
+        count(*)
+        FROM
+        t_poitest tpt
+        <include refid="hkj"></include>
+    </select>
+    <!-- 分页查询用户信息 -->
+    <select id="bookpagelist" parameterType="hashMap" resultType="com.jk.model.PoitestBean" >
+        SELECT
+        tpt.*
+        FROM
+        t_poitest tpt
+        <include refid="hkj"></include>
+        LIMIT #{page},#{rows}
+    </select>
+    <!-- 条件查询 -->
+    <sql id="hkj">
+        <where>
+            <if test="bookBean.wannengname != null">
+                 tpt.name like '%${bookBean.wannengname}%'
+            </if>
+        </where>
+    </sql>
+
+
+
+
+    <!-- 查询优惠卷总条数 -->
+    <select id="materialscount" parameterType="hashMap" resultType="int" >
+        SELECT
+        count(*)
+        FROM
+        t_discountcoupon tdis
+        <include refid="mat"></include>
+    </select>
+    <!-- 分页查询优惠卷 -->
+    <select id="materialspagelist" parameterType="hashMap" resultType="com.jk.model.DiscountcouponBean" >
+        SELECT
+        tdis.*
+        FROM
+        t_discountcoupon tdis
+        <include refid="mat"></include>
+        LIMIT #{page},#{rows}
+    </select>
+    <!-- 条件查询 -->
+    <sql id="mat">
+        <where>
+            <if test="bookBean.wannengname != null and bookBean.wannengname != ''">
+                tdis.discountcoupon like '%${bookBean.wannengname}%'
+            </if>
+            <if test="bookBean.info != null">
+               and tdis.info like '%${bookBean.info}%'
+            </if>
+
+        </where>
+    </sql>
+     <!--新增优惠卷 -->
+    <insert id="saveMaterial" parameterType="com.jk.model.DiscountcouponBean">
+       insert into t_discountcoupon(discountcoupon,info,validity) values(#{discountcoupon},#{info},#{validity})
+    </insert>
+    <!-- 删除优惠卷 -->
+    <delete id="deletediscountcoupon" parameterType="int">
+        delete from t_discountcoupon  where id in(
+        <foreach collection="array" index="index" item="ids" separator=",">
+            #{ids}
+        </foreach>
+        )
+    </delete>
+
+
+
+    <!-- 查询小食总条数 -->
+    <select id="refreshmentscount" parameterType="hashMap" resultType="int" >
+        SELECT
+        count(*)
+        FROM
+        heart_refreshments hr
+        <include refid="ref"></include>
+    </select>
+    <!-- 分页查询小食 -->
+    <select id="refreshmentslist" parameterType="hashMap" resultType="com.jk.model.RefreshmentsBean" >
+        SELECT
+        hr.*
+        FROM
+        heart_refreshments hr
+        <include refid="ref"></include>
+        LIMIT #{page},#{rows}
+    </select>
+    <!-- 条件查询 -->
+    <sql id="ref">
+        <where>
+            <if test="bookBean.wannengname != null and bookBean.wannengname != ''">
+                hr.refreshmentsname like '%${bookBean.wannengname}%'
+            </if>
+        </where>
+    </sql>
+    <!--新增小食 -->
+    <insert id="saveRefreshments" parameterType="com.jk.model.RefreshmentsBean">
+       insert into heart_refreshments(refreshmentsname,refreshmentsflavour,refreshmentsprice,refreshmentspecification,refreshmentslength,refreshmentssweetness,refreshmentsimg) values(#{refreshmentsname},#{refreshmentsflavour},#{refreshmentsprice},#{refreshmentspecification},#{refreshmentslength},#{refreshmentssweetness},#{refreshmentsimg})
+    </insert>
+    <!-- 删除小食 -->
+    <delete id="deleteRefreshments" parameterType="int">
+        delete from heart_refreshments  where refreshmentsid in(
+        <foreach collection="array" index="index" item="ids" separator=",">
+            #{ids}
+        </foreach>
+        )
+    </delete>
+
+
+
+
+    <!-- 查询蛋糕总条数 -->
+    <select id="CakeListcount" parameterType="hashMap" resultType="int" >
+       SELECT COUNT(*)  FROM
+(select c.cakeId
+       from cake_number cn  left join lecake_cake c  on  cn.cakeId=c.cakeId
+      left join lecake_number n  on cn.numberId= n.numberId
+      left join lecake_flavor f  on c.flavorId= f.flavorId
+      where c.typecake=1
+        <include refid="cake"></include>
+      GROUP BY c.cakeId)  a
+    </select>
+    <!-- 分页查询蛋糕 -->
+    <select id="CakeListlist" parameterType="hashMap" resultType="com.jk.model.CakeNumberBean" >
+      select
+      c.cakeId as cakeId,
+      c.cakeImg as cakeImg,
+      c.cakeName as cakeName,
+      cn.price    as   price,
+      n.bulk    as bulk,
+      GROUP_CONCAT(n.numberName)as numberName,
+      n.sweetness as sweetness,
+      GROUP_CONCAT(n.tableware)as tableware,
+      n.weight    as weight,
+      f.flavorId  as flavorId,
+      f.flavorName as flavorName
+      FROM
+       cake_number cn  left join lecake_cake c  on  cn.cakeId=c.cakeId
+      left join lecake_number n  on cn.numberId= n.numberId
+      left join lecake_flavor f  on c.flavorId= f.flavorId
+      where c.typecake=1
+        <include refid="cake"></include>
+      GROUP BY c.cakeId
+        LIMIT #{page},#{rows}
+    </select>
+    <!-- 条件查询 -->
+    <sql id="cake">
+            <if test="bookBean.wannengname != null and bookBean.wannengname != ''">
+              and  c.cakeName like '%${bookBean.wannengname}%'
+            </if>
+            <if test="bookBean.wannengname != null and bookBean.wannengname != ''">
+              or  f.flavorName like '%${bookBean.wannengname}%'
+            </if>
+    </sql>
+    <!--新增蛋糕 -->
+    <insert id="saveCake" parameterType="com.jk.model.CakeNumberBean">
+        insert into cake_number(cakeId,numberId,price) values(#{cakeId},#{numberId},#{price})
+    </insert>
+
+
+
+
+
+    <!-- 查询save蛋糕总条数 -->
+    <select id="Cakequerycount" parameterType="hashMap" resultType="int" >
+      select COUNT(*) from lecake_cake lc LEFT JOIN lecake_promotion lp on lc.promotionId=lp.promotionId
+                              LEFT JOIN lecake_food lfo on lc.foodId=lfo.foodId
+                               LEFT JOIN lecake_flavor lfl on lc.flavorId=lfl.flavorId
+        <include refid="Cakequery"></include>
+    </select>
+    <!-- 分页save查询蛋糕 -->
+    <select id="Cakequerylist" parameterType="hashMap" resultType="com.jk.model.CakeBean" >
+      select lc.*,lp.promotionName,lc.foodId,lfl.flavorName,lfo.foodName from lecake_cake lc LEFT JOIN lecake_promotion lp on lc.promotionId=lp.promotionId
+                              LEFT JOIN lecake_food lfo on lc.foodId = lfo.foodId
+                               LEFT JOIN lecake_flavor lfl on lc.flavorId=lfl.flavorId
+        <include refid="Cakequery"></include>
+        LIMIT #{page},#{rows}
+    </select>
+    <!-- 条件查询 -->
+    <sql id="Cakequery">
+      <where>
+        <if test="bookBean.wannengname != null and bookBean.wannengname != ''">
+            lc.cakeName like '%${bookBean.wannengname}%'
+        </if>
+        <if test="bookBean.wannengname != null and bookBean.wannengname != ''">
+            or  lfl.flavorName like '%${bookBean.wannengname}%'
+        </if>
+      </where>
+    </sql>
+    <!-- 删除save蛋糕 -->
+    <delete id="deletednumberid" parameterType="int">
+        delete from lecake_cake  where cakeId in(
+        <foreach collection="array" index="index" item="ids" separator=",">
+            #{ids}
+        </foreach>
+        )
+    </delete>
+    <!--新增蛋糕 -->
+    <insert id="savenumberid" parameterType="com.jk.model.CakeNumberBean">
+        insert into lecake_cake(cakeName,flavorId,foodId,promotionId,cakeImg,typecake) values(#{cakeName},#{flavorId},#{foodId},#{promotionId},#{cakeImg},1)
+    </insert>
+
+
+
+
+
+    <!-- 查询订单总条数 -->
+    <select id="ordercount" parameterType="hashMap" resultType="int" >
+        SELECT count(*) FROM  t_order tor
+LEFT JOIN t_shouhuoinfo ts on tor.shouhuoinfoid=ts.id
+LEFT JOIN t_goodsinfo tg on tor.cakeId=tg.id
+    </select>
+    <!-- 分页查询订单信息 -->
+    <select id="orderpagelist" parameterType="hashMap" resultType="com.jk.model.OrderBean" >
+        SELECT tor.orderid as orderid,
+     tg.cakeimg as cakeimg,tg.goodsname as goodsname,
+     tg.size as size,tg.goodsprice as goodsprice,
+      tg.count as count,
+tor.orderdate as orderdate,
+       tor.orderprice as orderprice,tor.jifenprice as jifenprice ,
+      tor.commodity as commodity, tor.yunfei as yunfei ,
+    tor.kehuojifen as kehuojifen , tor.delivergoods as delivergoods,
+   tor.orderstatus as orderstatus, ts.name as tsname,
+   ts.youbian as youbian,ts.phone as phone,ts.area as area
+     FROM  t_order tor
+LEFT JOIN t_shouhuoinfo ts on tor.shouhuoinfoid=ts.id
+LEFT JOIN t_goodsinfo tg on tor.cakeId=tg.id
+        <include refid="order"></include>
+LIMIT #{page},#{rows}
+    </select>
+    <!-- 条件查询 -->
+    <sql id="order">
+       <where>
+        <if test="bookBean.wannengname != null and bookBean.wannengname != ''">
+            tor.orderid like '%${bookBean.wannengname}%'
+        </if>
+        <if test="bookBean.wannengname != null and bookBean.wannengname != ''">
+            or  ts.phone like '%${bookBean.wannengname}%'
+        </if>
+       </where>
+    </sql>
+
+</mapper>

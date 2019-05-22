@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+</head>
+<body>
+<button type="button" onclick="tiaojianchaxun()">条件查询</button>
+<input type="text" id="wannengname" name="wannengname">
+<div th:include="/index.html"></div>
+<button type="button" onclick="openAdd()" class="btn btn-info glyphicon glyphicon-plus ">新增材料</button>
+<table id="userTable"></table>
+</body>
+<script type="text/javascript">
+
+    $(function(){
+        initMaterialsTable();
+    })
+
+    function tiaojianchaxun(){
+        $('#userTable').bootstrapTable('refresh');
+    }
+
+    function initMaterialsTable(){
+        $('#userTable').bootstrapTable({
+            toolbar:'#toolbar',
+            url:'/CakeList',//获取数据地址
+            pagination:true, //是否展示分页
+            pageList:[1,5,10,20,50],//分页组件
+            pageNumber:1,
+            pageSize:5,//默认每页条数
+            clickToSelect: true, //是否启用点击选中行
+            sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
+            queryParams:function(){
+                var wannengname = $("#wannengname").val();
+                return {
+                    page:this.pageNumber,
+                    rows:this.pageSize,
+                    wannengname:wannengname
+                }
+            },
+            columns:[
+                {field:"cakeName",title:"蛋糕名",whert:30},
+                {field:"cakeImg",title:"蛋糕图",formatter:function(value,row,index){
+                        return "<img width='80px' height='80px' src="+value+">";
+                    }},
+                {field:"flavorName",title:"口味"},
+                {field:"numberName",title:"用餐人数",width:100},
+                {field:"tableware",title:"餐具",width:93},
+                {field:"bulk",title:"规格"},
+                {field:"price",title:"价格",width:100},
+                {field:"weight",title:"重量",width:100},
+                {field:"sweetness",title:"甜度",width:100,formatter:function(value,row,index){
+                        if(value==1){
+                            return "☆";
+                        }else if(value==2){
+                            return "☆☆";
+                        }else if(value==3){
+                            return "☆☆☆";
+                        }else if(value==4){
+                            return "☆☆☆☆";
+                        }else if(value==5){
+                            return "☆☆☆☆☆";
+                        }
+                    }},
+            ]
+        });
+    }
+
+
+    var res;
+    function createAddContent(url){
+        $.ajax({
+            url:url,
+            async:false,
+            success:function(data){
+                res = data;
+            }
+        });
+        return res;
+    }
+
+    //新增
+    function openAdd(){
+        bootbox.dialog({
+            title:'添加商品',
+            message: createAddContent("/CakeAdd"),
+            closeButton: true,
+            buttons : {
+                "success" : {
+                    "label" : "<i class='icon-ok'></i> 保存",
+                    "className" : "btn-sm btn-success",
+                    "callback" : function() {
+                        $.ajax({
+                            url:'/saveCake',
+                            type:'post',
+                            data:$("#addbookform").serialize(),
+                            dataType:'json',
+                            success:function(data){
+                                if (data) {
+                                    tiaojianchaxun();
+                                }else{
+                                    bootbox.alert({
+                                        size: "small",
+                                        title: "提示",
+                                        message: "新增失败！",
+                                        buttons: {
+                                            ok: {
+                                                label: '确定',
+                                                className: 'btn-success'
+                                            }
+                                        }
+                                    })
+                                }
+
+                            }
+                        });
+                    }
+                },
+                "cancel" : {
+                    "label" : "<i class='icon-info'></i> 取消",
+                    "className" : "btn-sm btn-danger",
+                    "callback" : function() {
+
+                    }
+                }
+            }
+
+        });
+    }
+
+
+</script>
+</html>

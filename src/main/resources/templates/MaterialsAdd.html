@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+</head>
+<style type="text/css">
+    .mydiv{
+        margin-top: 250px;
+        margin-left: 550px;
+    }
+</style>
+<body>
+<div th:include="/index.html"></div>
+<div class="modal-dialog" >
+    <form class="form-inline" id="addbookform">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="input-group">
+                        <span class="input-group-addon">优惠卷名</span>
+                        <input type="text" class="form-control" id="discountcoupon"  name="discountcoupon" >
+                    </div><br/>
+                    <div class="input-group">
+                        <span class="input-group-addon">优惠卷介绍</span>
+                        <input type="text" class="form-control" id="info"  name="info" >
+                    </div><br/>
+                    <div class="input-group">
+                        <span class="input-group-addon">使用时间</span>
+                        <input type="text" class="form-control" id="validity"  name="validity" >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

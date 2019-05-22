@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+</head>
+<style type="text/css">
+    .mydiv{
+        margin-top: 250px;
+        margin-left: 550px;
+    }
+</style>
+<body>
+<div th:include="/index.html"></div>
+<div class="modal-dialog" >
+    <form class="form-inline" id="addbookform">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="input-group">
+                        <span class="input-group-addon">蛋糕种类</span>
+                        <select  class="form-control" style="width:200px"  id="cakeId" name="cakeId">
+                        </select>
+                    </div><br/>
+                    <div class="input-group">
+                        <span class="input-group-addon">用餐人数</span>
+                        <select  class="form-control" style="width:200px"  id="numberId" name="numberId">
+                        </select>
+                    </div><br/>
+                    <div class="input-group">
+                        <span class="input-group-addon">价格</span>
+                        <input type="text" class="form-control" id="price"  name="price" >
+                    </div>
+                </div>
+                </div>
+            </div>
+    </form>
+</div>
+</body>
+<script type="text/javascript">
+
+    $(function(){
+        cakeidtype();
+        numberidtype();
+    })
+    //查询蛋糕类型
+    function cakeidtype(){
+        $.ajax({
+            url:'/cakeidlist',
+            type:'post',
+            async:false,
+            data:{},
+            dataType:'json',
+            success:function(data){
+                var html='<option value="-1" >请选择</option>';
+                for (var i = 0; i < data.length; i++) {
+                    html+='<option value='+data[i].cakeId+' >'+data[i].cakeName+'</option>';
+                }
+                $("#cakeId").html(html);
+            }
+        });
+    }
+
+    //查询用餐人数
+    function numberidtype(){
+        $.ajax({
+            url:'/numberidlist',
+            type:'post',
+            async:false,
+            data:{},
+            dataType:'json',
+            success:function(data){
+                var html='<option value="-1" >请选择</option>';
+                for (var i = 0; i < data.length; i++) {
+                    html+='<option value='+data[i].numberId+' >'+data[i].numberName+'</option>';
+                }
+                $("#numberId").html(html);
+            }
+        });
+    }
+
+</script>
+</html>

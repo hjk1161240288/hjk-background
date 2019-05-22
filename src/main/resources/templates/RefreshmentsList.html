@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+</head>
+<body>
+<button type="button" onclick="tiaojianchaxun()">条件查询</button>
+<input type="text" id="wannengname" name="wannengname">
+<div th:include="/index.html"></div>
+<button type="button" onclick="openAdd()" class="btn btn-info glyphicon glyphicon-plus ">新增材料</button>
+<table id="userTable"></table>
+</body>
+<script type="text/javascript">
+
+    $(function(){
+        initMaterialsTable();
+    })
+
+    function tiaojianchaxun(){
+        $('#userTable').bootstrapTable('refresh');
+    }
+
+    function initMaterialsTable(){
+        $('#userTable').bootstrapTable({
+            toolbar:'#toolbar',
+            url:'/RefreshmentsList',//获取数据地址
+            pagination:true, //是否展示分页
+            pageList:[1,5,10,20,50],//分页组件
+            pageNumber:1,
+            pageSize:5,//默认每页条数
+            clickToSelect: true, //是否启用点击选中行
+            sidePagination:'server',//分页方式：client客户端分页，server服务端分页（*
+            queryParams:function(){
+                var wannengname = $("#wannengname").val();
+                return {
+                    page:this.pageNumber,
+                    rows:this.pageSize,
+                    wannengname:wannengname,
+                }
+            },
+            columns:[
+                {field:"refreshmentsname",title:"商品名称"},
+                {field:"refreshmentsflavour",title:"商品味道"},
+                {field:"refreshmentsprice",title:"商品价格"},
+                {field:"refreshmentspecification",title:"商品规格"},
+                {field:"refreshmentslength",title:"长度"},
+                {field:"refreshmentssweetness",title:"甜度",formatter:function(value,row,index){
+            if(value==1){
+                return "☆";
+            }else if(value==2){
+                return "☆☆";
+            }else if(value==3){
+                return "☆☆☆";
+            }else if(value==4){
+                return "☆☆☆☆";
+            }else if(value==5){
+                return "☆☆☆☆☆";
+            }
+        }},
+                {field:"refreshmentsimg",title:"商品图片",formatter:function(value,row,index){
+                        return "<img width='50px' height='50px' src="+value+">";
+                    }},
+                {field:"tools",title:"操作",formatter:function(value,row,index){
+                        return " <a href='javascript:deleteRefreshments("+row.refreshmentsid+")'>删除</a>";
+                    }}
+            ]
+        });
+    }
+
+
+    //单删
+    function deleteRefreshments(ids){
+        $.ajax({
+            url:'/deleteRefreshments',
+            type:'post',
+            data:{
+                ids:ids
+            },
+            success:function(data){
+                if (data) {
+                    toastr.success("删除成功!");
+                    tiaojianchaxun();
+                }
+            }
+        })
+    }
+
+    // function eee(info){
+    //     alert(info);
+    // }
+
+    //新增
+    var res;
+    function createAddContent(url){
+        $.ajax({
+            url:url,
+            async:false,
+            success:function(data){
+                res = data;
+            }
+        });
+        return res;
+    }
+    function openAdd(){
+        bootbox.dialog({
+            title:'添加商品',
+            message: createAddContent("/RefreshmentsAdd"),
+            closeButton: true,
+            buttons : {
+                "success" : {
+                    "label" : "<i class='icon-ok'></i> 保存",
+                    "className" : "btn-sm btn-success",
+                    "callback" : function() {
+                        $.ajax({
+                            url:'/saveRefreshments',
+                            type:'post',
+                            data:$("#addbookform").serialize(),
+                            dataType:'json',
+                            success:function(data){
+                                if (data) {
+                                    toastr.success("新增成功!");
+                                    tiaojianchaxun();
+                                }else{
+                                    toastr.success("新增失败!");
+                                    tiaojianchaxun();
+                                }
+
+                            }
+                        });
+                    }
+                },
+                "cancel" : {
+                    "label" : "<i class='icon-info'></i> 取消",
+                    "className" : "btn-sm btn-danger",
+                    "callback" : function() {
+
+                    }
+                }
+            }
+
+        });
+    }
+
+</script>
+</html>
