@@ -215,7 +215,7 @@
     <!-- 查询订单总条数 -->
     <select id="ordercount" parameterType="hashMap" resultType="int" >
         SELECT count(*) FROM  t_order tor
-LEFT JOIN t_shouhuoinfo ts on tor.shouhuoinfoid=ts.id
+LEFT JOIN t_shouhuoinfo ts on tor.shouhuoinfoid=ts.shouhuoid
 LEFT JOIN t_goodsinfo tg on tor.cakeId=tg.id
     </select>
     <!-- 分页查询订单信息 -->
@@ -229,9 +229,9 @@ tor.orderdate as orderdate,
       tor.commodity as commodity, tor.yunfei as yunfei ,
     tor.kehuojifen as kehuojifen , tor.delivergoods as delivergoods,
    tor.orderstatus as orderstatus, ts.name as tsname,
-   ts.youbian as youbian,ts.phone as phone,ts.area as area
+   ts.youbian as youbian,ts.phonee as phone,ts.area as area
      FROM  t_order tor
-LEFT JOIN t_shouhuoinfo ts on tor.shouhuoinfoid=ts.id
+LEFT JOIN t_shouhuoinfo ts on tor.shouhuoinfoid=ts.shouhuoid
 LEFT JOIN t_goodsinfo tg on tor.cakeId=tg.id
         <include refid="order"></include>
 LIMIT #{page},#{rows}
