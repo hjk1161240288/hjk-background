@@ -1,6 +1,8 @@
 package com.jk.model;
 
-public class LecakeNumberBean {
+import java.io.Serializable;
+
+public class LecakeNumberBean implements Serializable {
 
     private Integer numberId;
 

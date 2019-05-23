@@ -1,6 +1,8 @@
 package com.jk.model;
 
-public class ShouhuoinfoBean {
+import java.io.Serializable;
+
+public class ShouhuoinfoBean implements Serializable {
    private Integer id;
     private String phone;
     private String  area;

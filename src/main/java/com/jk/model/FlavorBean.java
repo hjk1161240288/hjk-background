@@ -1,6 +1,8 @@
 package com.jk.model;
 
-public class FlavorBean {
+import java.io.Serializable;
+
+public class FlavorBean implements Serializable {
     private Integer flavorId;
     private String flavorName;
 

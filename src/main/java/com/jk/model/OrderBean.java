@@ -1,6 +1,8 @@
 package com.jk.model;
 
-public class OrderBean {
+import java.io.Serializable;
+
+public class OrderBean implements Serializable {
 
    private Integer id ;
     private String orderid;

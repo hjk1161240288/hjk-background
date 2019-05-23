@@ -1,6 +1,8 @@
 package com.jk.model;
 
-public class PoitestBean {
+import java.io.Serializable;
+
+public class PoitestBean implements Serializable {
 
     private Integer id ;
 

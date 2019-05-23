@@ -1,6 +1,8 @@
 package com.jk.model;
 
-public class FoodBean {
+import java.io.Serializable;
+
+public class FoodBean implements Serializable {
 
 
     private Integer foodId;

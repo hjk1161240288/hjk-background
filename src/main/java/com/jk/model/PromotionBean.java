@@ -1,6 +1,8 @@
 package com.jk.model;
 
-public class PromotionBean {
+import java.io.Serializable;
+
+public class PromotionBean implements Serializable {
 
     private Integer promotionId;
     private String promotionName;

@@ -1,6 +1,8 @@
 package com.jk.model;
 
-public class CakeNumberBean {
+import java.io.Serializable;
+
+public class CakeNumberBean  implements Serializable {
 
 
     private Integer cakeNumberId;

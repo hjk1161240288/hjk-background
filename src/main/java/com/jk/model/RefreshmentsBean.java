@@ -1,6 +1,8 @@
 package com.jk.model;
 
-public class RefreshmentsBean {
+import java.io.Serializable;
+
+public class RefreshmentsBean implements Serializable {
 
     private Integer refreshmentsid;
 

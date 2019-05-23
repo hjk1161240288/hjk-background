@@ -1,6 +1,8 @@
 package com.jk.model;
 
-public class DiscountcouponBean {
+import java.io.Serializable;
+
+public class DiscountcouponBean implements Serializable {
 
     private Integer id;
 

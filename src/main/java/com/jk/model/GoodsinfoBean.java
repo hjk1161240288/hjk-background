@@ -1,6 +1,8 @@
 package com.jk.model;
 
-public class GoodsinfoBean {
+import java.io.Serializable;
+
+public class GoodsinfoBean  implements Serializable {
 
     private Integer id;
     private String cakeimg;
